@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+		<div id="demo">
+		</div>
+	</body>
+	<template id="app">
+		<a v-link="{path:'/index'}">index</a>
+		<a v-link="{name:'home',params:{id:1,name:'abc'}}">home</a>
+		<a v-link="{path:'/index/a'}">a</a>
+		<a v-link="{path:'/index/b'}">b</a>
+		<!--{{name}}
+			<index></index>-->
+		<router-view></router-view>
+		<!--<div ng-view=""></div>
+		<div ui-view=""></div>-->
+	</template>
+	<script src="vue.js"></script>
+	<script src="vue-resource.min.js"></script>
+	<script src="vue-router.js"></script>
+	<script>
+		var index = Vue.extend({
+			template: '<div>第一个路由</div><router-view></router-view>',
+			data: function() {
+				return {}
+			},
+			methods: {
+
+			}
+		})
+		var index2 = Vue.extend({
+			template: '<div>第二个路由</div>',
+			route:{
+				data:function(transition){
+					console.log(transition)
+					this.$http.get('test.php',{
+						params:{
+							name:transition.to.params.name
+						}
+					}).then(function(data){
+						console.log(data)
+					})
+				}
+			}
+		})
+		var a = Vue.extend({
+			template: '<p>第一个路由嵌套a</p>'
+		})
+		
+		var b = Vue.extend({
+			template: '<p>第二个路由嵌套b</p>'
+		})
+		var App = Vue.extend({
+				template: '#app',
+				replace: false,
+				data: function() {
+					return {
+						name: 'wsscat'
+					}
+				}
+			})
+			//Vue.component('index',index)
+			/*new Vue({
+				el:'#demo',
+				data:{
+					name:'wsscat'
+				},
+				methods:{
+					
+				}
+			})*/
+			//定义路由
+		var router = new VueRouter();
+		router.map({
+				//#!/index #/index
+				'/index': {
+					component: index,
+					//路由嵌套逻辑
+					subRoutes:{
+						'/a':{
+							component: a
+						},
+						'/b':{
+							component: b
+						}
+					}
+				},
+				'/home/:id/:name': {
+					name:'home',
+					component: index2
+				}
+			})
+			//默认的路由
+		router.redirect({
+			'*': '/index'
+		})
+		router.start(App, '#demo')
+	</script>
+	<style>
+		.v-link-active {
+			color: red
+		}
+	</style>
+
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+	<script>
+		var app = angular.module('wsscat',['ui.router']);
+		app.config(function($stateProvider,$urlRouterProvider){
+			$stateProvider.state('main',{
+				url:'/main',
+				template:'views/main.html',
+				controller:'mainCtrl'
+			})
+		})
+	</script>
+</html>
